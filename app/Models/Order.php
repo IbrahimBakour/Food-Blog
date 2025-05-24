@@ -31,10 +31,15 @@ class Order extends Model
     ];
 
     public function user() {
-        return $this->belongsTo(User::class); 
+        return $this->belongsTo(User::class);
     }
 
     public function food() {
-        return $this->belongsToMany(Food::class)->withPivot('quantity'); 
+        return $this->belongsToMany(Food::class)->withPivot('quantity');
+    }
+
+    public function feedback()
+    {
+        return $this->hasOne(OrderFeedback::class);
     }
 }

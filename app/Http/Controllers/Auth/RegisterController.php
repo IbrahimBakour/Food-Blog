@@ -49,9 +49,8 @@ class RegisterController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             // 'password' => ['required', 'string', 'min:6', 'confirmed'],
-            'password' => ['required', 
-            'min:6', 
-            'regex:/^.*(?=.{3,})(?=.*[a-zA-Z])(?=.*[0-9])(?=.*[\d\x])(?=.*[!$#%]).*$/', 
+            'password' => ['required',
+            'min:6',
             'confirmed'],
             'address' => ['required', 'string'],
         ]);
@@ -59,7 +58,7 @@ class RegisterController extends Controller
     /**
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-   
+
     protected function create(array $data)
     {
         return User::create([
@@ -74,6 +73,6 @@ class RegisterController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    
-   
+
+
 }

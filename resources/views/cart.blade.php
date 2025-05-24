@@ -140,7 +140,12 @@ if (!empty(session('cart'))) {
                 <div class="px-6 pt-3 border-t">
                     <div class="flex justify-end">
                         <button type="button" class="closeOrderModal bg-gray-700 text-gray-100 rounded px-4 py-2 mr-1">Close</Button>
+                        <!-- Place this where your button should appear -->
                         <button type="button" class="openPaymentModal bg-green-600 text-white rounded px-4 py-2">Proceed to Payment</Button>
+
+<!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentModal">
+  Proceed to Payment
+</button> -->
                     </div>
                 </div>
             </form>
@@ -180,6 +185,37 @@ if (!empty(session('cart'))) {
     </div>
 </div>
 
+<!-- Bootstrap Modal for Payment -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="paymentForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="paymentModalLabel">Payment Details</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="cardNumber" class="form-label">Card Number</label>
+            <input type="text" class="form-control" id="cardNumber" required>
+          </div>
+          <div class="mb-3">
+            <label for="expiry" class="form-label">Expiry Date</label>
+            <input type="text" class="form-control" id="expiry" placeholder="MM/YY" required>
+          </div>
+          <div class="mb-3">
+            <label for="cvv" class="form-label">CVV</label>
+            <input type="password" class="form-control" id="cvv" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Pay</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 <!-- Payment Success Modal -->
 <div class="invisible flex h-screen overflow-y-auto overflow-x-hidden fixed right-0 left-0 top-0 z-50 justify-center items-center md:inset-0 h-modal sm:h-full" id="payment-success-modal">
     <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
@@ -210,8 +246,40 @@ if (!empty(session('cart'))) {
     </div>
 </div>
 
+<!-- Custom Payment Modal -->
+<div class="modal fade" id="openPayModal" tabindex="-1" aria-labelledby="openPayModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="payReferenceForm">
+        <div class="modal-header">
+          <h5 class="modal-title" id="openPayModalLabel">Complete Your Payment</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center">
+          <!-- Your chosen image -->
+          <div class="d-flex flex-column align-items-center mb-3">
+            <img src="\images\screenshots\QR-code.jpg" alt="Payment" style="max-width: 200px;">
+          </div>
+          <div class="mb-3">
+            <label for="paymentReference" class="form-label">Payment Reference</label>
+            <input type="text" class="form-control" id="paymentReference" name="paymentReference" required>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Paid</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
 {{-- Just for some spacing before the end of page (footer) --}}
 <div class="py-10"></div>
+
+<!-- Bootstrap CSS -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function() {
@@ -230,36 +298,29 @@ if (!empty(session('cart'))) {
         });
 
         $('.openPaymentModal').on('click', function(e) {
-            if (document.getElementById('deliveryType').checked) {
-                if (validateForm()) {
-                    $('#payment-modal').removeClass('invisible');
-                    setTimeout(function() {
-                        $('#payment-modal').addClass('invisible');
-                        showPaymentSuccess();
-                    }, 3000);
-                }
-            } else {
-                $('#payment-modal').removeClass('invisible');
-                setTimeout(function() {
-                    $('#payment-modal').addClass('invisible');
-                    showPaymentSuccess();
-                }, 3000);
-            }
+            // Show the custom payment modal instead of the old payment modal
+            var openPayModal = new bootstrap.Modal(document.getElementById('openPayModal'));
+            openPayModal.show();
         });
 
-        function showPaymentSuccess() {
+        // Handle the Paid button in the custom modal
+        $('#payReferenceForm').on('submit', function(e) {
+            e.preventDefault();
+            // You can add validation or AJAX here if needed
+
+            // Optionally, close the modal
+            var openPayModal = bootstrap.Modal.getInstance(document.getElementById('openPayModal'));
+            openPayModal.hide();
+
+            // Show a success message or proceed with order submission
+            // For example, show the payment-success-modal:
             $('#payment-success-modal').removeClass('invisible');
             setTimeout(function() {
                 $('#payment-success-modal').addClass('invisible');
-                submitOrderForm();
+                // Optionally submit the order form
+                $('#place-order-form').submit();
             }, 2000);
-        }
-
-        function submitOrderForm() {
-            $('#place-order-form').submit();
-        }
-
-
+        });
     });
 
     function validateForm() {
@@ -291,5 +352,19 @@ if (!empty(session('cart'))) {
 
         document.getElementById('address').defaultValue = 'abc';
     }
+</script>
+
+<script>
+  document.getElementById('paymentForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // Hide the payment modal
+    var paymentModal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
+    paymentModal.hide();
+
+    // Show the openPayModal
+    var openPayModal = new bootstrap.Modal(document.getElementById('openPayModal'));
+    openPayModal.show();
+});
 </script>
 @endsection

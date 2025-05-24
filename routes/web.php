@@ -5,6 +5,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FoodController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderFeedbackController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -39,6 +40,8 @@ Route::post('/cart/placeorder', [OrderController::class, 'placeOrder']);
 Route::post('/user/edit', [UserController::class, 'update']);
 Route::get('/user/edit', [UserController::class, 'updateView']);
 Route::delete('/user/{user}', [UserController::class, 'delete']);
+
+Route::post('/orders/{order}/feedback', [OrderFeedbackController::class, 'store'])->name('orders.feedback');
 
 
 

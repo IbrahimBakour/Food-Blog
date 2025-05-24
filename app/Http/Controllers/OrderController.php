@@ -24,7 +24,7 @@ class OrderController extends Controller
     {
         $user_id = Auth::id();
         $orders = Order::where('user_id', $user_id)->orderBy('date', 'desc')->get();
-        
+
         // To get total amount for each order:
         foreach($orders as $order) {
             $total = 0.0;
@@ -32,7 +32,7 @@ class OrderController extends Controller
             foreach($order->food as $food) {
                 $total += $food->price * $food->pivot->quantity;
             }
-            
+
             $order->total = $total;
         }
 
@@ -62,10 +62,10 @@ class OrderController extends Controller
             // $food = Food::findOrFail($req['id']);
             // $order->food()->attach($food, ['quantity' => $req['quantity']]);
             // $order->deliveryAddress = 'aaa';
-    
+
             // Check if in the cart session array already has the same food_id in any of its sub-array's 'id' key.
             $foodExists = false;    // variable for whether that food exists in the cart session array
-            
+
             // If have, need to add to that quantity, don't push a new array to the cart session array.
             if (is_array(Session::get('cart'))) {
                 $cart_arr = Session::get('cart');
@@ -83,7 +83,7 @@ class OrderController extends Controller
                         break;  // break out of this foreach loop
                     }
                 }
-    
+
                 // If don't have, push a new array to the cart session array.
                 if(!$foodExists) {
                     $food = [
@@ -114,10 +114,10 @@ class OrderController extends Controller
         {
             $cart_arr = array();
             $results = array();
-            
+
             // check if it is an array
             if (is_array($array)) {
-                
+
                 foreach ($array as $subarray) {
                     $cart_id++;
                     // Cart session array consists of subarrays.
@@ -141,7 +141,7 @@ class OrderController extends Controller
 
         // Replace the existing array in the cart session with $new_cart_arr
         Session::put('cart', $new_cart_arr);
-        
+
         Session::flash('success', 'Successfully removed from cart.');
         return redirect('/cart');
     }
@@ -153,14 +153,14 @@ class OrderController extends Controller
             'type' => $req->type,
             'deliveryAddress' => $req->address,
         ]);
-        
+
         $cart_arr = Session::pull('cart');  // pull: get the value and removes it from the session
         foreach ($cart_arr as $key => $value) {
             // $key = 0,1,2,...,n   $value = 'id','name','price',...
             $food = Food::findOrFail($value['id']);
             $order->food()->attach($food, ['quantity' => $value['quantity']]);  // attach each food in the cart to the newly created order
         }
-        
+
         Session::flash('success', 'Successfully placed order.');
         return redirect('/order');
     }
