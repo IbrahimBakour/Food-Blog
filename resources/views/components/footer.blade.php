@@ -3,7 +3,7 @@
         <div class="footer card-footer text-left bg-gray-300">
             <div class="flex flex-row p-1">
                 <div class="flex-col flex-1 ">
-                    <h2 class="text-xl font-bold">Foodie</h2>
+                    <h2 class="text-xl font-bold">EasyOrder</h2>
 
                     <div class="flex flex-row">
                         <button class="mr-3 hover:text-blue-700">Store Locations</button>
@@ -22,7 +22,7 @@
                                     </svg>
                                 </td>
                                 <td class="text-left">
-                                    <span class="text-sm pl-2">info@foodie.com.my</span>
+                                    <span class="text-sm pl-2">info@easyorder.com.my</span>
                                 </td>
                             </tr>
                             <tr>
@@ -41,20 +41,18 @@
 
                 <div class="relative flex-1">
                     <div class="absolute right-0 bottom-0">
-                        <h1 class="text-sm text-right">@ 2022 Foodie Sdn. Bhd.</h1>
-                        
+                        <h1 class="text-sm text-right">@ 2022 EasyOrder Sdn. Bhd.</h1>
+
                         <div class="row my-1">
                             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
                             <ul class="flex justify-content-end space-x-3">
                                 <button> <i class="fa fa-google    hover:text-blue-700" style="font-size:20px;"> </i> </button>
                                 <button> <i class="fa fa-facebook  hover:text-blue-700" style="font-size:20px;"> </i> </button>
                                 <button> <i class="fa fa-instagram hover:text-blue-700" style="font-size:20px;"> </i> </button>
-                                <button> <i class="fa fa-github    hover:text-blue-700" style="font-size:20px;"> </i> </button>
-                                <button> <i class="fa fa-youtube   hover:text-blue-700" style="font-size:20px;"> </i> </button>                       
                             </ul>
                         </div>
-            
-                        <div class="text-right text-sm">             
+
+                        <div class="text-right text-sm">
                             <button class="hover:text-blue-700">Terms of Service</button>
                             <span class="mx-1 text-gray-700">&#8226;</span>
                             <button class="hover:text-blue-700">Privacy Policy</button>
@@ -62,8 +60,8 @@
                     </div>
                 </div>
             </div>
-{{-- 
-            
+{{--
+
             <!-- <div class="row-cols-sm-2"> -->
             <h2 class="text-lg font-bold">Foodie</h2>
             <!-- <h1>About the company</h1>
@@ -104,7 +102,7 @@
                 </tbody>
             </table>
             <!-- </div> -->
-            
+
             <div class="offset-sm-9">
                 <h1 class="text-sm text-right">@ 2022 Foodie Sdn. Bhd.</h1>
             </div>
@@ -118,7 +116,7 @@
                             <button> <i class="fa fa-facebook"> </i> </button>
                             <button> <i class="fa fa-instagram"></i> </button>
                             <button> <i class="fa fa-github">   </i> </button>
-                            <button> <i class="fa fa-youtube">  </i> </button>                       
+                            <button> <i class="fa fa-youtube">  </i> </button>
                         </ul>
                         <!-- <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Facebook_Logo_%282019%29.png/1024px-Facebook_Logo_%282019%29.png" style="width:45px;height:30px;">
                         <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKymTzfKxwBMdV3lOHlCbYK4i1SFl8XKiK5Q&usqp=CAU" style="width:45px;height:30px;">
@@ -128,7 +126,7 @@
                 </div>
             </div>
 
-            <div class="offset-sm-9 text-right text-sm">             
+            <div class="offset-sm-9 text-right text-sm">
                 <button class="hover:text-blue-700">Terms of Service</button>
                 <span class="mx-1 text-gray-600">&#8226;</span>
                 <button class="hover:text-blue-700">Privacy Policy</button>
