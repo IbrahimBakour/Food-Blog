@@ -27,7 +27,7 @@ class FoodController extends Controller
         }
         return view('food.home',  ['foods' => $foods]);
     }
-    
+
     public function filter($type)
     {
         $foods = Food::where('type', '=', $type);
@@ -40,7 +40,7 @@ class FoodController extends Controller
                 $sorted = $foods->orderBy('price', 'DESC');
             }
         } else {
-            $sorted = $foods;        
+            $sorted = $foods;
         }
         return view('food.home',  ['foods' => $foods->paginate(12)]);
     }

@@ -31,7 +31,11 @@ class Food extends Model
         'picture',
     ];
 
-    public function orders() {
-        return $this->belongsToMany(Order::class)->withPivot('quantity');
-    }
+    public function orders()
+{
+    return $this->belongsToMany(Order::class, 'food_order')
+                ->withPivot('quantity', 'message')
+                ->withTimestamps();
+}
+
 }

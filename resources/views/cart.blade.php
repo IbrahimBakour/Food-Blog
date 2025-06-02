@@ -15,18 +15,22 @@ if (!empty(session('cart'))) {
 
 @section('content')
 <h1 class="px-4 pt-1 pb-3 text-3xl font-bold">
-    <div class="flex flex-row">
-        <div class="flex flex-row flex-1">
+    <div class="flex flex-row items-center">
+        <div class="flex flex-row flex-1 items-center">
             <span class="mr-5 self-center"> My Cart </span>
             <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 self-center" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
             </svg>
         </div>
-        <div class="flex-1 text-right text-2xl self-center">
-            @if (!empty(session('cart')))
-            <span class="mr-8 "> Total: RM{{number_format((float)($total), 2, '.', '')}} </span>
-            @endif
+        @if (!empty(session('cart')))
+        <div class="flex flex-row items-center text-right text-2xl self-center gap-3">
+            <button type="button" class="openOrderModal shadow leading-tight bg-green-600 text-white text-xl font-semibold rounded-lg m-4 px-12 py-3 focus:outline-none focus:border-white">
+                Place Order
+            </button>
+            <span class="mr-4">Total: RM{{number_format((float)($total), 2, '.', '')}}</span>
+
         </div>
+        @endif
     </div>
 </h1>
 
@@ -38,19 +42,41 @@ if (!empty(session('cart'))) {
     <div class="flex flex-row px-4 py-3 leading-normal border shadow-md hover:bg-gray-100">
         <div class="w-full">
             <div class="flex flex-col justify-between">
-                <div class="flex flex-col items-center bg-white rounded-lg border shadow-md md:flex-row md:max-w-full hover:bg-gray-100">
+                <div class="flex flex-col px-4 items-center bg-white rounded-lg border shadow-md md:flex-row md:max-w-full hover:bg-gray-100">
                     <div class="flex rounded-lg">
-                        <img class="flex h-28 w-44 object-fill rounded-lg" src="{{$food['picture']}}">
+                        <img class="flex h-30 w-44 object-fill rounded-lg" src="{{$food['picture']}}">
                     </div>
                     <div class="flex flex-col place-content-center px-4 py-3 leading-normal w-4/6">
                         <h5 class="flex mb-2 text-2xl font-bold tracking-tight text-gray-900"> {{$food['name']}} </h5>
                         <p class="flex font-normal text-gray-700"> Quantity: <b>&nbsp;{{$food['quantity']}}</b> </p>
                         <p class="flex font-normal text-gray-700"> Price: <b>&nbsp;RM{{number_format((float)($food['price']*$food['quantity']), 2, '.', '')}} &ensp;</b> <span class="opacity-60"> [RM{{number_format((float)($food['price']), 2, '.', '')}} per unit] <span> </p>
+                        @if (!empty($food['message']))
+                        <p class="flex font-normal text-gray-700"> Customer Request: <b>&nbsp;{{$food['message']}}</b> </p>
+                        @endif
                     </div>
-                    <div class="flex justify-center leading-normal w-1/6">
-                        <button onclick="remove_form_action({{$food['id']}})" type="button" class="openRemoveModal text-red-700 font-semibold bg-inherit border-red-500 rounded hover:text-white hover:bg-red-500 hover:border-transparent py-1 px-3 border-2">
-                            <span> Remove </span>
-                        </button>
+                    <div class="flex flex-col items-center justify-center w-full px-4 py-2">
+                        <div class="flex flex-row gap-3 justify-end w-full">
+                            <!-- Update Button -->
+                            <button
+                                type="button"
+                                class="openEditCartItemModal bg-blue-600 text-white rounded px-4 py-3 hover:bg-blue-700 text-sm font-semibold"
+                                data-bs-toggle="modal"
+                                data-bs-target="#editCartItemModal"
+                                data-id="{{ $food['id'] }}"
+                                data-quantity="{{ $food['quantity'] }}"
+                                data-message="{{ $food['message'] ?? '' }}"
+                            >
+                                Update
+                            </button>
+                            <!-- Remove Button -->
+                            <button
+                                onclick="remove_form_action({{ $food['id'] }})"
+                                type="button"
+                                class="openRemoveModal bg-red-600 text-white rounded px-4 py-3 hover:bg-red-700 text-sm font-semibold"
+                            >
+                                Remove
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -59,11 +85,11 @@ if (!empty(session('cart'))) {
 </div>
 @endforeach
 
-<div class="flex justify-center">
-    <button type="button" class="openOrderModal shadow leading-tight bg-green-600 text-white text-xl font-semibold rounded-lg m-4 px-12 py-3 text-sm focus:outline-none focus:border-white">
+<!--<div class="flex justify-center">
+    <button type="button" class="openOrderModal shadow leading-tight bg-green-600 text-white text-xl font-semibold rounded-lg m-4 px-12 py-3 focus:outline-none focus:border-white">
         Place Order
     </button>
-</div>
+</div>-->
 @else
 <p class="px-4 pt-4 text-lg">
     Your cart is empty.
@@ -185,37 +211,6 @@ if (!empty(session('cart'))) {
     </div>
 </div>
 
-<!-- Bootstrap Modal for Payment -->
-<div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <form id="paymentForm">
-        <div class="modal-header">
-          <h5 class="modal-title" id="paymentModalLabel">Payment Details</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="mb-3">
-            <label for="cardNumber" class="form-label">Card Number</label>
-            <input type="text" class="form-control" id="cardNumber" required>
-          </div>
-          <div class="mb-3">
-            <label for="expiry" class="form-label">Expiry Date</label>
-            <input type="text" class="form-control" id="expiry" placeholder="MM/YY" required>
-          </div>
-          <div class="mb-3">
-            <label for="cvv" class="form-label">CVV</label>
-            <input type="password" class="form-control" id="cvv" required>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-success">Pay</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
 <!-- Payment Success Modal -->
 <div class="invisible flex h-screen overflow-y-auto overflow-x-hidden fixed right-0 left-0 top-0 z-50 justify-center items-center md:inset-0 h-modal sm:h-full" id="payment-success-modal">
     <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
@@ -237,10 +232,7 @@ if (!empty(session('cart'))) {
                     </svg>
                 </div>
                 <h3 class="mb-4 text-2xl font-semibold text-gray-600">Payment successful!</h3>
-                {{-- <button data-modal-toggle="popup-modal" type="button" class="closePaymentModal text-white bg-red-600 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
-                        Yes, I'm sure
-                    </button>
-                    <button data-modal-toggle="popup-modal" type="button" class="closePaymentModal text-gray-500 bg-white hover:bg-gray-100 focus:ring-4 focus:ring-gray-300 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5 hover:text-gray-900 focus:z-10 dark:bg-gray-700 dark:text-gray-300 dark:border-gray-500 dark:hover:text-white dark:hover:bg-gray-600">No, cancel</button> --}}
+
             </div>
         </div>
     </div>
@@ -267,6 +259,37 @@ if (!empty(session('cart'))) {
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-success">Paid</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Cart Item Modal -->
+<div class="modal fade" id="editCartItemModal" tabindex="-1" aria-labelledby="editCartItemModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="editCartItemForm" method="POST">
+        @csrf
+        @method('patch')
+        <div class="modal-header">
+          <h5 class="modal-title" id="editCartItemModalLabel">Edit Cart Item</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editCartItemId" name="food_id">
+          <div class="mb-3">
+            <label for="editQuantity" class="form-label">Quantity</label>
+            <input type="number" min="1" class="form-control" id="editQuantity" name="quantity" required>
+          </div>
+          <div class="mb-3">
+            <label for="editMessage" class="form-label">Request/Message</label>
+            <input type="text" class="form-control" id="editMessage" name="message">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-success">Save</button>
         </div>
       </form>
     </div>
@@ -355,16 +378,38 @@ if (!empty(session('cart'))) {
 </script>
 
 <script>
-  document.getElementById('paymentForm').addEventListener('submit', function(e) {
-    e.preventDefault();
+    $(document).ready(function() {
+        $('.showUpdateForm').on('click', function() {
+            var foodId = $(this).data('food-id');
+            $(this).hide();
+            $('.updateForm[data-food-id="' + foodId + '"]').show();
+        });
+        $('.cancelUpdateForm').on('click', function() {
+            var foodId = $(this).data('food-id');
+            $('.updateForm[data-food-id="' + foodId + '"]').hide();
+            $('.showUpdateForm[data-food-id="' + foodId + '"]').show();
+        });
+    });
+</script>
+<script>
+$(document).ready(function() {
+    // When opening the modal, fill in the fields
+    $('.openEditCartItemModal').on('click', function() {
+        var foodId = $(this).data('id');
+        var quantity = $(this).data('quantity');
+        var message = $(this).data('message');
+        $('#editCartItemId').val(foodId);
+        $('#editQuantity').val(quantity);
+        $('#editMessage').val(message);
 
-    // Hide the payment modal
-    var paymentModal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
-    paymentModal.hide();
+        // Set the form action dynamically
+        $('#editCartItemForm').attr('action', '/cart/update/' + foodId);
+    });
 
-    // Show the openPayModal
-    var openPayModal = new bootstrap.Modal(document.getElementById('openPayModal'));
-    openPayModal.show();
+    // Optionally, clear the form on modal close
+    $('#editCartItemModal').on('hidden.bs.modal', function () {
+        $('#editCartItemForm')[0].reset();
+    });
 });
 </script>
 @endsection

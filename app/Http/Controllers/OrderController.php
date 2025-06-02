@@ -21,31 +21,30 @@ class OrderController extends Controller
     }
 
     public function show()
-    {
-        $user_id = Auth::id();
-        $orders = Order::where('user_id', $user_id)->orderBy('date', 'desc')->get();
+{
+    $user_id = Auth::id();
+    $orders = Order::with('foods')->where('user_id', $user_id)->orderBy('date', 'desc')->get();
 
-        // To get total amount for each order:
-        foreach($orders as $order) {
-            $total = 0.0;
+    foreach ($orders as $order) {
+        $total = 0.0;
 
-            foreach($order->food as $food) {
-                $total += $food->price * $food->pivot->quantity;
-            }
-
-            $order->total = $total;
+        foreach ($order->foods as $food) {
+            $total += $food->price * $food->pivot->quantity;
         }
 
-        return view('order', ['orders' => $orders]);
+        $order->total = $total;
     }
+
+    return view('order', ['orders' => $orders]);
+}
 
     public function destroy($id)
     {
         $order = Order::findOrFail($id);
         // For each food in the order:
-        foreach ($order->food as $food){
+        foreach ($order->foods as $foods){
             // Remove from pivot table
-            $order->food()->detach($food->id);
+            $order->foods()->detach($foods->id);
         }
         $order->delete();
         // $order->food()->detach($food_id);
@@ -92,7 +91,9 @@ class OrderController extends Controller
                         'price' => $req->price,
                         'picture' => $req->picture,
                         'quantity' => $req->quantity,
+                        'message' => $req->message, // NEW
                     ];
+
                     Session::push('cart', $food);
                 }
 
@@ -146,22 +147,53 @@ class OrderController extends Controller
         return redirect('/cart');
     }
 
-    public function placeOrder(Request $req) {
-        $order = Order::create([
-            'user_id' => Auth::id(),
-            'date' => Carbon::now(),
-            'type' => $req->type,
-            'deliveryAddress' => $req->address,
+    public function placeOrder(Request $req)
+{
+    $order = Order::create([
+        'user_id' => Auth::id(),
+        'date' => Carbon::now(),
+        'type' => $req->type,
+        'deliveryAddress' => $req->address,
+    ]);
+
+    $cart_arr = Session::pull('cart');
+
+    foreach ($cart_arr as $value) {
+        $food = Food::findOrFail($value['id']);
+        $order->foods()->attach($food, [
+            'quantity' => $value['quantity'],
+            'message' => $value['message'] ?? null  // Add this line
         ]);
-
-        $cart_arr = Session::pull('cart');  // pull: get the value and removes it from the session
-        foreach ($cart_arr as $key => $value) {
-            // $key = 0,1,2,...,n   $value = 'id','name','price',...
-            $food = Food::findOrFail($value['id']);
-            $order->food()->attach($food, ['quantity' => $value['quantity']]);  // attach each food in the cart to the newly created order
-        }
-
-        Session::flash('success', 'Successfully placed order.');
-        return redirect('/order');
     }
+
+    Session::flash('success', 'Successfully placed order.');
+    return redirect('/order');
+}
+
+public function index()
+{
+    $orders = Order::with('foods', 'feedback')->where('user_id', auth()->id())->get();
+    return view('order', compact('orders'));
+}
+
+public function updateCartItem(Request $request, $food_id)
+{
+    $request->validate([
+        'quantity' => 'required|integer|min:1',
+        'message' => 'nullable|string|max:255',
+    ]);
+
+    $cart = session('cart', []);
+    foreach ($cart as $key => $item) {
+        if ($item['id'] == $food_id) {
+            $cart[$key]['quantity'] = $request->quantity;
+            $cart[$key]['message'] = $request->message;
+            break;
+        }
+    }
+    session(['cart' => $cart]);
+    return redirect()->back()->with('success', 'Cart item updated successfully.');
+}
+
+
 }

@@ -9,7 +9,7 @@ if (session('cart') == null) {
 
 @section('content')
 
-<div class="hidden flex w-full justify-center items-center" id="message-modal" data-object="{{ Session::get('unauthorized')}}">
+<div class="hidden w-full justify-center items-center" id="message-modal" data-object="{{ Session::get('unauthorized')}}">
     <div class="px-4 py-2 mb-4 mx-2 bg-red-100 w-8/12 flex">
         <p id="message-content" class="text-red-800 flex-grow m-auto font-semibold"></p>
         <button type="button" class="close text-lg" id="close">x</button>

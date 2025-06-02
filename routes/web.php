@@ -36,6 +36,8 @@ Route::view('cart', 'cart');
 Route::post('/addToCart', [OrderController::class, 'updateCart']);
 Route::delete('/cart/remove/{food_id}', [OrderController::class, 'removeFromCart']);
 Route::post('/cart/placeorder', [OrderController::class, 'placeOrder']);
+Route::patch('/cart/update/{food_id}', [OrderController::class, 'updateCartItem'])->name('cart.update');
+
 
 Route::post('/user/edit', [UserController::class, 'update']);
 Route::get('/user/edit', [UserController::class, 'updateView']);

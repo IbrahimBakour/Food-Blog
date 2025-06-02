@@ -34,9 +34,11 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function food() {
-        return $this->belongsToMany(Food::class)->withPivot('quantity');
-    }
+    public function foods()
+{
+    return $this->belongsToMany(Food::class)->withPivot(['quantity', 'message']);
+}
+
 
     public function feedback()
     {

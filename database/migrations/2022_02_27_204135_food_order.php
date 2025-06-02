@@ -17,8 +17,8 @@ class FoodOrder extends Migration
             $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('food_id');
             $table->integer('quantity');
-            $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
-            $table->foreign('food_id')->references('id')->on('foods')->onDelete('cascade');
+            $table->foreign('order_id')->references('id')->on('order')->onDelete('cascade');
+            $table->foreign('food_id')->references('id')->on('food')->onDelete('cascade');
         });
     }
 
