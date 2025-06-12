@@ -91,7 +91,7 @@ class OrderController extends Controller
                         'price' => $req->price,
                         'picture' => $req->picture,
                         'quantity' => $req->quantity,
-                        'message' => $req->message, // NEW
+                        // 'message' => $req->message, // NEW
                     ];
 
                     Session::push('cart', $food);
@@ -162,7 +162,7 @@ class OrderController extends Controller
         $food = Food::findOrFail($value['id']);
         $order->foods()->attach($food, [
             'quantity' => $value['quantity'],
-            'message' => $value['message'] ?? null  // Add this line
+            // 'message' => $value['message'] ?? null  // Add this line
         ]);
     }
 
@@ -180,14 +180,14 @@ public function updateCartItem(Request $request, $food_id)
 {
     $request->validate([
         'quantity' => 'required|integer|min:1',
-        'message' => 'nullable|string|max:255',
+        // 'message' => 'nullable|string|max:255',
     ]);
 
     $cart = session('cart', []);
     foreach ($cart as $key => $item) {
         if ($item['id'] == $food_id) {
             $cart[$key]['quantity'] = $request->quantity;
-            $cart[$key]['message'] = $request->message;
+            // $cart[$key]['message'] = $request->message;
             break;
         }
     }

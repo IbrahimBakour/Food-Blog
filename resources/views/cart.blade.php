@@ -169,9 +169,6 @@ if (!empty(session('cart'))) {
                         <!-- Place this where your button should appear -->
                         <button type="button" class="openPaymentModal bg-green-600 text-white rounded px-4 py-2">Proceed to Payment</Button>
 
-<!-- <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#paymentModal">
-  Proceed to Payment
-</button> -->
                     </div>
                 </div>
             </form>

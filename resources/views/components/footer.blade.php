@@ -41,7 +41,7 @@
 
                 <div class="relative flex-1">
                     <div class="absolute right-0 bottom-0">
-                        <h1 class="text-sm text-right">@ 2022 EasyOrder Sdn. Bhd.</h1>
+                        <h1 class="text-sm text-right">@ 2025 EasyOrder Sdn. Bhd.</h1>
 
                         <div class="row my-1">
                             <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
